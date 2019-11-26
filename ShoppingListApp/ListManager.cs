@@ -13,89 +13,54 @@ namespace ShoppingListApp
 	/// It creates a List of ShoppingItem objects
 	/// and contains all the methods used to alter the list as necessary.</para>
 	/// </summary>
-	class ListManager:IList<ShoppingItem>
+	class ListManager
 	{
-		private List<ShoppingItem> shoppingItems = new List<ShoppingItem>();
-		public int Count => this.shoppingItems.Count;
-		public bool IsReadOnly { get; }
+		private readonly List<ShoppingItem> itemsList = new List<ShoppingItem>();
+		public int Count => this.itemsList.Count;
 
-		public ShoppingItem this[int index] { get => this.shoppingItems[index]; set => this.shoppingItems[index] = value; }
+		public ShoppingItem this[int index] { get => this.itemsList[index]; set => this.itemsList[index] = value; }
 
 		/// <summary>
 		/// Constructor for the ListManager class.
 		/// </summary>
-		public ListManager(bool readOnly = false) {
-			this.IsReadOnly = readOnly;
+		public ListManager() {
+
 		}
 
-		/// <summary>
-		/// Counts the number of elements in the shoppingItems List.
-		/// </summary>
-		public int CountItems() => this.Count;
-
-		public bool ValidIndex(int index) => (index >= 0) && (index < this.Count);
+		public bool ValidIndex(int index) => (index >= 0) && (index < this.itemsList.Count);
 
 		public void AddShoppingItem(ShoppingItem itemToAdd) {
-			if (IngredientInList(itemToAdd, out int index)) {
+			if (this.itemsList.Contains(itemToAdd)) {
 				MergeShoppingItem(itemToAdd, index);
 			} else {
-				this.shoppingItems.Add(itemToAdd);
+				this.itemsList.Add(itemToAdd);
 			}
 		}
 
 		public void RemoveShoppingItem(int indexOfItem) {
 			if (ValidIndex(indexOfItem)) {
-				this.shoppingItems.RemoveAt(indexOfItem);
+				this.itemsList.RemoveAt(indexOfItem);
 			}
 		}
 		/// <summary>
-		/// Method to update an existing <see cref="shoppingItems"/> instance by supplying
-		/// a new <see cref="ShoppingItem"/> object and the index of the ShoppingItem to
+		/// Method to update an the itemsList field by supplying
+		/// a new <see cref="ShoppingItem"/> object and the <paramref name="index"/> of the ShoppingItem to
 		/// be changed.
 		/// </summary>
 		/// <param name="updatedItem">ShoppingItem object with updated properties</param>
-		/// <param name="indexOfItemToChange">index of the shoppingItems[index] instance</param>
-		public void ChangeShoppingItem(ShoppingItem updatedItem, int indexOfItemToChange) {
-			if (ValidIndex(indexOfItemToChange)) {
-				this[indexOfItemToChange].Ingredient = updatedItem.Ingredient;
-				this[indexOfItemToChange].Amount = updatedItem.Amount;
-				this[indexOfItemToChange].Unit = updatedItem.Unit;
+		/// <param name="index">index of the itemsList[index] instance</param>
+		public void ChangeShoppingItem(ShoppingItem updatedItem, int index) {
+			if (ValidIndex(index)) {
+				this[index].Ingredient = updatedItem.Ingredient;
+				this[index].Amount = updatedItem.Amount;
+				this[index].Unit = updatedItem.Unit;
 			}
 		}
 
-		public bool IngredientInList(ShoppingItem item, out int index) {
-			if (this.Contains(item)) {
-				index = this.IndexOf(item);
-				return true;
+		public void MergeShoppingItem(ShoppingItem item, int index) {
+			if (ValidIndex(index)) {
+				this[index].Amount += item.Amount;
 			}
-			index = -1;
-			return false;
 		}
-
-		public void MergeShoppingItem(ShoppingItem item, int index) => this[index].Amount += item.Amount;
-		public int IndexOf(ShoppingItem item) {
-			for (int i = 0; i < this.Count; i++) {
-				if (this[i].Equals(item)) {
-					return i;
-				}
-			}
-			return -1;
-		}
-		public void Insert(int index, ShoppingItem item) => throw new NotImplementedException();
-		public void RemoveAt(int index) => throw new NotImplementedException();
-		public void Add(ShoppingItem item) => throw new NotImplementedException();
-		public void Clear() => throw new NotImplementedException();
-		public bool Contains(ShoppingItem item) {
-			foreach (ShoppingItem shopping in this) {
-				if (shopping.Equals(item)) {
-					return true;
-				}
-			}
-			return false;
-		}
-		public void CopyTo(ShoppingItem[] array, int arrayIndex) => throw new NotImplementedException();
-		public bool Remove(ShoppingItem item) => throw new NotImplementedException();
-		public IEnumerator<ShoppingItem> GetEnumerator() => throw new NotImplementedException();
-		IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
 	}
 }

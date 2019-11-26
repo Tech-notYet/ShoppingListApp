@@ -79,13 +79,13 @@ namespace ShoppingListApp
 		public void UpdateIngredientsList() {
 			lstShoppingItems.Items.Clear();
 			for (int i = 0; i < listManager.CountItems(); i++) {
-				lstShoppingItems.Items.Add(listManager.shoppingItems[i]);
+				lstShoppingItems.Items.Add(listManager.itemsList[i]);
 			}
 		}
 
 		private void ingredientsListBox_SelectedIndexChanged(object sender, EventArgs e) {
 			try {
-				ShoppingItem item = listManager.shoppingItems[lstShoppingItems.SelectedIndex];
+				ShoppingItem item = listManager.itemsList[lstShoppingItems.SelectedIndex];
 				txtIngredient.Text = item.Ingredient;
 				spinAmount.Value = (decimal)item.Amount;
 				cboUnit.SelectedIndex = cboUnit.Items.IndexOf(Measurements.UnitToString(item.Unit));
